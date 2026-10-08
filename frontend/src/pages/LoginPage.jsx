@@ -1,0 +1,287 @@
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { Film, Lock, Mail, AlertCircle, ArrowRight, Sparkles } from 'lucide-react';
+
+const LoginPage = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      await login(email, password, rememberMe);
+      navigate('/home');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Invalid email or password. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUseDemo = () => {
+    setEmail('demo@moviefinder.com');
+    setPassword('password123');
+  };
+
+  return (
+    <div
+      style={{
+        position: 'relative',
+        minHeight: '100vh',
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundImage: `url('https://images.unsplash.com/photo-1574267432553-4b4628081c31?w=1920&auto=format&fit=crop')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        padding: '24px',
+      }}
+    >
+      {/* Dark Vignette Overlay */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: `
+            radial-gradient(circle at center, rgba(10, 10, 15, 0.7) 0%, rgba(10, 10, 15, 0.95) 100%),
+            linear-gradient(to bottom, rgba(10, 10, 15, 0.8) 0%, rgba(10, 10, 15, 0.95) 100%)
+          `,
+        }}
+      />
+
+      {/* Centered Login Card */}
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          width: '100%',
+          maxWidth: '440px',
+          backgroundColor: 'rgba(20, 20, 29, 0.92)',
+          backdropFilter: 'blur(16px)',
+          borderRadius: '14px',
+          padding: '40px 36px',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.8)',
+          animation: 'fadeIn 0.4s ease',
+        }}
+      >
+        {/* Brand */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '28px' }}>
+          <div
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '9px',
+              background: 'linear-gradient(135deg, #e50914 0%, #b81d24 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 14px rgba(229, 9, 20, 0.6)',
+            }}
+          >
+            <Film size={20} color="#ffffff" />
+          </div>
+          <span style={{ fontSize: '1.6rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.5px' }}>
+            Movie<span style={{ color: '#e50914' }}>Finder</span>
+          </span>
+        </div>
+
+        <h2 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#ffffff', marginBottom: '8px', textAlign: 'center' }}>
+          Sign In
+        </h2>
+        <p style={{ fontSize: '0.85rem', color: '#a3a3b2', textAlign: 'center', marginBottom: '24px' }}>
+          Discover movies powered by AI vibe matching
+        </p>
+
+        {error && (
+          <div
+            style={{
+              backgroundColor: 'rgba(229, 9, 20, 0.15)',
+              border: '1px solid rgba(229, 9, 20, 0.4)',
+              borderRadius: '8px',
+              padding: '12px 14px',
+              color: '#ff6b6b',
+              fontSize: '0.85rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              marginBottom: '20px',
+            }}
+          >
+            <AlertCircle size={18} />
+            <span>{error}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          {/* Email */}
+          <div>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#d1d1db', marginBottom: '6px' }}>
+              Email Address
+            </label>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                borderRadius: '8px',
+                padding: '12px 14px',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+              }}
+            >
+              <Mail size={18} color="#a3a3b2" style={{ marginRight: '10px' }} />
+              <input
+                type="email"
+                required
+                placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#ffffff',
+                  fontSize: '0.9rem',
+                  width: '100%',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Password */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+              <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#d1d1db' }}>
+                Password
+              </label>
+              <a
+                href="#forgot"
+                onClick={(e) => {
+                  e.preventDefault();
+                  alert('Password reset link has been dispatched to your email.');
+                }}
+                style={{ fontSize: '0.75rem', color: '#a3a3b2', transition: 'color 0.2s' }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#e50914')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = '#a3a3b2')}
+              >
+                Forgot password?
+              </a>
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                borderRadius: '8px',
+                padding: '12px 14px',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+              }}
+            >
+              <Lock size={18} color="#a3a3b2" style={{ marginRight: '10px' }} />
+              <input
+                type="password"
+                required
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#ffffff',
+                  fontSize: '0.9rem',
+                  width: '100%',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Remember Me */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <input
+              type="checkbox"
+              id="remember"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              style={{ accentColor: '#e50914', cursor: 'pointer' }}
+            />
+            <label htmlFor="remember" style={{ fontSize: '0.8rem', color: '#a3a3b2', cursor: 'pointer' }}>
+              Remember me
+            </label>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="glow-button"
+            style={{
+              width: '100%',
+              justifyContent: 'center',
+              padding: '14px',
+              fontSize: '0.95rem',
+              marginTop: '6px',
+            }}
+          >
+            {loading ? 'Signing in...' : 'Sign In'}
+            {!loading && <ArrowRight size={18} />}
+          </button>
+
+          {/* Demo Account Quick Fill */}
+          <button
+            type="button"
+            onClick={handleUseDemo}
+            style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px dashed rgba(255, 255, 255, 0.2)',
+              color: '#d1d1db',
+              padding: '10px',
+              borderRadius: '8px',
+              fontSize: '0.8rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+              e.currentTarget.style.borderColor = '#e50914';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            }}
+          >
+            <Sparkles size={14} color="#e50914" />
+            <span>Use Demo Account (demo@moviefinder.com)</span>
+          </button>
+        </form>
+
+        {/* Link to Register */}
+        <div style={{ marginTop: '28px', textAlign: 'center', fontSize: '0.85rem', color: '#a3a3b2' }}>
+          New to MovieFinder?{' '}
+          <Link
+            to="/register"
+            style={{ color: '#ffffff', fontWeight: 600, marginLeft: '4px' }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#e50914')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = '#ffffff')}
+          >
+            Sign up now
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LoginPage;
