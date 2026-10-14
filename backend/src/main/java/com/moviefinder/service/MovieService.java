@@ -86,6 +86,22 @@ public class MovieService {
     }
 
     @Transactional(readOnly = true)
+    public List<MovieSummaryDto> getBollywoodMovies() {
+        User currentUser = authService.getCurrentAuthenticatedUser();
+        return movieRepository.findByIndustryIgnoreCaseOrderByTmdbRatingDesc("Bollywood").stream()
+                .map(m -> toSummaryDto(m, currentUser))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<MovieSummaryDto> getTvSeries() {
+        User currentUser = authService.getCurrentAuthenticatedUser();
+        return movieRepository.findByContentTypeIgnoreCaseOrderByTmdbRatingDesc("TV_SERIES").stream()
+                .map(m -> toSummaryDto(m, currentUser))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public MovieSummaryDto getFeaturedMovie() {
         User currentUser = authService.getCurrentAuthenticatedUser();
         // Featured movie: highest popularity / prominent title (e.g. Interstellar or Inception)
@@ -147,6 +163,9 @@ public class MovieService {
         dto.setTmdbRating(movie.getTmdbRating());
         dto.setImdbRating(movie.getImdbRating());
         dto.setGenres(movie.getGenres().stream().map(Genre::getName).collect(Collectors.toList()));
+        dto.setContentType(movie.getContentType());
+        dto.setIndustry(movie.getIndustry());
+        dto.setSeasons(movie.getSeasons());
 
         if (currentUser != null) {
             dto.setInWatchlist(userWatchlistRepository.existsByUserIdAndMovieId(currentUser.getId(), movie.getId()));
@@ -178,6 +197,9 @@ public class MovieService {
         dto.setRottenTomatoesRating(movie.getRottenTomatoesRating());
         dto.setMetacriticRating(movie.getMetacriticRating());
         dto.setGenres(movie.getGenres().stream().map(Genre::getName).collect(Collectors.toList()));
+        dto.setContentType(movie.getContentType());
+        dto.setIndustry(movie.getIndustry());
+        dto.setSeasons(movie.getSeasons());
 
         // Multi-source rating comparison map
         Map<String, Object> comparison = new LinkedHashMap<>();

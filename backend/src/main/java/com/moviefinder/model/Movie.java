@@ -61,6 +61,13 @@ public class Movie {
     @Column(name = "metacritic_rating")
     private String metacriticRating = "N/A";
 
+    @Column(name = "content_type")
+    private String contentType = "MOVIE";
+
+    private String industry = "Hollywood";
+
+    private String seasons;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -130,6 +137,15 @@ public class Movie {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public String getContentType() { return contentType; }
+    public void setContentType(String contentType) { this.contentType = contentType; }
+
+    public String getIndustry() { return industry; }
+    public void setIndustry(String industry) { this.industry = industry; }
+
+    public String getSeasons() { return seasons; }
+    public void setSeasons(String seasons) { this.seasons = seasons; }
 
     public Set<Genre> getGenres() { return genres; }
     public void setGenres(Set<Genre> genres) { this.genres = genres; }

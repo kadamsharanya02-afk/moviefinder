@@ -57,4 +57,14 @@ public class MovieController {
     public ResponseEntity<List<MovieSummaryDto>> getBecauseYouWatched() {
         return ResponseEntity.ok(movieService.getBecauseYouWatched());
     }
+
+    @GetMapping("/bollywood")
+    public ResponseEntity<List<MovieSummaryDto>> getBollywoodMovies() {
+        return ResponseEntity.ok(movieService.getBollywoodMovies());
+    }
+
+    @GetMapping("/tv-series")
+    public ResponseEntity<List<MovieSummaryDto>> getTvSeries() {
+        return ResponseEntity.ok(movieService.getTvSeries());
+    }
 }

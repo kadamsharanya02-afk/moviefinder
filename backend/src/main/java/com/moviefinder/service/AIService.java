@@ -234,6 +234,16 @@ public class AIService {
             detectedKeywords.add("mind-bending/sci-fi");
         }
 
+        // Bollywood / Indian Cinema
+        if (containsAny(lower, "bollywood", "hindi", "indian", "desi")) {
+            detectedKeywords.add("Bollywood cinema");
+        }
+
+        // TV Series / Web Series
+        if (containsAny(lower, "tv series", "tv show", "web series", "series", "show", "episodes", "binge", "seasons")) {
+            detectedKeywords.add("TV/Web Series");
+        }
+
         VibePreference vibes = new VibePreference(horror, romance, thriller, comedy, drama, action, mystery, violence, darkness);
         String explanation = String.format("Analyzed request: tuned sliders emphasizing %s.",
                 detectedKeywords.isEmpty() ? "balanced preferences" : String.join(", ", detectedKeywords));

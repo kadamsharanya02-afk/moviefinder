@@ -38,6 +38,9 @@ CREATE TABLE IF NOT EXISTS movies (
     imdb_rating DOUBLE DEFAULT 0.0,
     rotten_tomatoes_rating VARCHAR(20) DEFAULT 'N/A',
     metacritic_rating VARCHAR(20) DEFAULT 'N/A',
+    content_type VARCHAR(50) DEFAULT 'MOVIE',
+    industry VARCHAR(50) DEFAULT 'Hollywood',
+    seasons VARCHAR(50) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 

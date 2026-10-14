@@ -49,9 +49,26 @@ public class RecommendationEngineService {
                 ? userPreferenceRepository.findByUserId(currentUser.getId()).orElse(null)
                 : null;
 
+        String promptLower = request.getPrompt() != null ? request.getPrompt().toLowerCase() : "";
+        boolean promptWantsBollywood = promptLower.contains("bollywood") || promptLower.contains("hindi") || promptLower.contains("indian") || promptLower.contains("desi");
+        boolean promptWantsSeries = promptLower.contains("series") || promptLower.contains("show") || promptLower.contains("season") || promptLower.contains("episodes");
+
         List<ScoredMovie> scoredMovies = new ArrayList<>();
 
         for (Movie movie : allMovies) {
+            // Optional Filter by Content Type (MOVIE vs TV_SERIES)
+            if (request.getContentType() != null && !request.getContentType().equalsIgnoreCase("ALL")) {
+                if (movie.getContentType() != null && !movie.getContentType().equalsIgnoreCase(request.getContentType())) {
+                    continue;
+                }
+            }
+            // Optional Filter by Industry (Bollywood vs Hollywood)
+            if (request.getIndustry() != null && !request.getIndustry().equalsIgnoreCase("ALL")) {
+                if (movie.getIndustry() != null && !movie.getIndustry().equalsIgnoreCase(request.getIndustry())) {
+                    continue;
+                }
+            }
+
             MovieFeature mf = featureMap.get(movie.getId());
             if (mf == null) continue;
 
@@ -77,6 +94,14 @@ public class RecommendationEngineService {
                                 (0.15 * genreScore) +
                                 (0.15 * ratingScore) +
                                 (0.05 * popScore);
+
+            // Boost for explicit intent matches (Bollywood / TV Series)
+            if (promptWantsBollywood && "Bollywood".equalsIgnoreCase(movie.getIndustry())) {
+                finalScore = Math.min(99.0, finalScore + 18.0);
+            }
+            if (promptWantsSeries && "TV_SERIES".equalsIgnoreCase(movie.getContentType())) {
+                finalScore = Math.min(99.0, finalScore + 18.0);
+            }
 
             String explanation = buildExplanation(movie, mf, request, userPref, vibeScore, finalScore);
 

@@ -12,6 +12,8 @@ public class VibeSearchRequest {
     private Integer mystery;
     private Integer violence;
     private Integer darkness;
+    private String contentType;
+    private String industry;
 
     public VibeSearchRequest() {}
 
@@ -44,4 +46,10 @@ public class VibeSearchRequest {
 
     public Integer getDarkness() { return darkness != null ? darkness : 50; }
     public void setDarkness(Integer darkness) { this.darkness = darkness; }
+
+    public String getContentType() { return contentType; }
+    public void setContentType(String contentType) { this.contentType = contentType; }
+
+    public String getIndustry() { return industry; }
+    public void setIndustry(String industry) { this.industry = industry; }
 }

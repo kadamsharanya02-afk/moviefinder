@@ -32,13 +32,15 @@ const DiscoverPage = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [loadingResults, setLoadingResults] = useState(false);
   const [activeTrailer, setActiveTrailer] = useState(null);
+  const [activeFilter, setActiveFilter] = useState('ALL'); // 'ALL' | 'MOVIES' | 'TV_SERIES' | 'BOLLYWOOD' | 'HOLLYWOOD'
 
   const samplePrompts = [
-    'I want something creepy and romantic with lots of suspense but not too violent.',
-    'A mind-bending sci-fi mystery that keeps me guessing till the end.',
-    'An uplifting, hilarious comedy with lots of heart and zero darkness.',
-    'Dark gritty crime thriller with intense tension and high stakes.',
-    'A visually stunning action spectacle with explosive energy.',
+    'Bollywood comedy about friendship and college life like 3 Idiots',
+    'Gritty crime thriller web series with dark secrets and high tension',
+    'A mind-bending sci-fi mystery that keeps me guessing till the end',
+    'Heartwarming Bollywood romantic drama with great emotion',
+    'Dark, psychological horror with supernatural chills and twists',
+    'Binge-worthy multi-season series with explosive character arcs',
   ];
 
   const handleSliderChange = (key, val) => {
@@ -62,7 +64,7 @@ const DiscoverPage = () => {
       setAiAnalysisResult({ explanation, detectedKeywords });
 
       // Automatically search with the updated vibe settings
-      fetchRecommendations(aiVibes);
+      fetchRecommendations(aiVibes, activeFilter);
     } catch (err) {
       console.error('AI analysis error:', err);
     } finally {
@@ -71,11 +73,20 @@ const DiscoverPage = () => {
   };
 
   // Find My Movies using Recommendation Engine
-  const fetchRecommendations = async (customVibes = vibes) => {
+  const fetchRecommendations = async (customVibes = vibes, filter = activeFilter) => {
     setLoadingResults(true);
     try {
+      let contentType = 'ALL';
+      let industry = 'ALL';
+      if (filter === 'MOVIES') contentType = 'MOVIE';
+      if (filter === 'TV_SERIES') contentType = 'TV_SERIES';
+      if (filter === 'BOLLYWOOD') industry = 'Bollywood';
+      if (filter === 'HOLLYWOOD') industry = 'Hollywood';
+
       const res = await api.post('/recommendations/vibe', {
         prompt,
+        contentType,
+        industry,
         ...customVibes,
       });
       setRecommendations(res.data.recommendations || []);
@@ -255,7 +266,7 @@ const DiscoverPage = () => {
                         explanation: res.data.explanation,
                         detectedKeywords: res.data.detectedKeywords,
                       });
-                      fetchRecommendations(res.data.vibes);
+                      fetchRecommendations(res.data.vibes, activeFilter);
                     })
                     .finally(() => setAnalyzingAi(false));
                 }}
@@ -404,13 +415,48 @@ const DiscoverPage = () => {
 
         {/* Section 3: Recommendation Results Grid with Explainable AI ("Why this movie?") */}
         <div style={{ marginTop: '50px' }}>
-          <div style={{ marginBottom: '24px' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#ffffff', marginBottom: '6px' }}>
-              Matched Discoveries
-            </h2>
-            <p style={{ fontSize: '0.9rem', color: '#a3a3b2' }}>
-              Ranked by similarity vector, user taste correlation, review quality, and your current mood settings.
-            </p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
+            <div>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#ffffff', marginBottom: '6px' }}>
+                Matched Discoveries
+              </h2>
+              <p style={{ fontSize: '0.9rem', color: '#a3a3b2' }}>
+                Ranked by similarity vector, user taste correlation, review quality, and your current mood settings.
+              </p>
+            </div>
+
+            {/* Filter Pills */}
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {[
+                { id: 'ALL', label: 'All Titles' },
+                { id: 'MOVIES', label: 'Movies' },
+                { id: 'TV_SERIES', label: 'TV & Web Series' },
+                { id: 'BOLLYWOOD', label: 'Bollywood' },
+                { id: 'HOLLYWOOD', label: 'Hollywood' },
+              ].map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => {
+                    setActiveFilter(f.id);
+                    fetchRecommendations(vibes, f.id);
+                  }}
+                  style={{
+                    backgroundColor: activeFilter === f.id ? '#e50914' : 'rgba(255, 255, 255, 0.06)',
+                    color: activeFilter === f.id ? '#ffffff' : '#a3a3b2',
+                    border: activeFilter === f.id ? '1px solid #e50914' : '1px solid rgba(255, 255, 255, 0.1)',
+                    padding: '8px 16px',
+                    borderRadius: '20px',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {loadingResults ? (

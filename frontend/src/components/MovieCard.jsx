@@ -85,30 +85,71 @@ const MovieCard = ({ movie, onPlayTrailer, onWatchlistChange }) => {
           }}
         />
 
-        {/* Match Score Badge (AI Recommendations) */}
-        {movie.matchScore && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '10px',
-              left: '10px',
-              backgroundColor: 'rgba(229, 9, 20, 0.9)',
-              color: '#ffffff',
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              padding: '3px 8px',
-              borderRadius: '4px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.5)',
-              backdropFilter: 'blur(4px)',
-            }}
-          >
-            <Sparkles size={12} />
-            <span>{Math.round(movie.matchScore)}% Match</span>
-          </div>
-        )}
+        {/* Badges Container (Match Score, TV Series, Bollywood) */}
+        <div style={{ position: 'absolute', top: '10px', left: '10px', display: 'flex', flexDirection: 'column', gap: '4px', zIndex: 2 }}>
+          {movie.matchScore && (
+            <div
+              style={{
+                backgroundColor: 'rgba(229, 9, 20, 0.95)',
+                color: '#ffffff',
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                padding: '3px 8px',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.5)',
+                backdropFilter: 'blur(4px)',
+              }}
+            >
+              <Sparkles size={11} />
+              <span>{Math.round(movie.matchScore)}% Match</span>
+            </div>
+          )}
+
+          {movie.contentType === 'TV_SERIES' && (
+            <div
+              style={{
+                backgroundColor: 'rgba(79, 70, 229, 0.9)',
+                color: '#ffffff',
+                fontSize: '0.68rem',
+                fontWeight: 700,
+                padding: '2px 6px',
+                borderRadius: '4px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                width: 'fit-content',
+                boxShadow: '0 2px 6px rgba(0, 0, 0, 0.4)',
+                backdropFilter: 'blur(4px)',
+                letterSpacing: '0.5px',
+              }}
+            >
+              {movie.seasons ? movie.seasons : 'TV Series'}
+            </div>
+          )}
+
+          {movie.industry === 'Bollywood' && (
+            <div
+              style={{
+                backgroundColor: 'rgba(217, 119, 6, 0.9)',
+                color: '#ffffff',
+                fontSize: '0.68rem',
+                fontWeight: 700,
+                padding: '2px 6px',
+                borderRadius: '4px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                width: 'fit-content',
+                boxShadow: '0 2px 6px rgba(0, 0, 0, 0.4)',
+                backdropFilter: 'blur(4px)',
+                letterSpacing: '0.5px',
+              }}
+            >
+              Bollywood
+            </div>
+          )}
+        </div>
 
         {/* Rating Badge */}
         <div
@@ -158,12 +199,24 @@ const MovieCard = ({ movie, onPlayTrailer, onWatchlistChange }) => {
             {movie.title}
           </h4>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.75rem', color: '#a3a3b2' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#a3a3b2', flexWrap: 'wrap' }}>
             {movie.releaseYear && <span>{movie.releaseYear}</span>}
+            {movie.contentType === 'TV_SERIES' && movie.seasons && (
+              <>
+                <span>•</span>
+                <span style={{ color: '#a5b4fc', fontWeight: 600 }}>{movie.seasons}</span>
+              </>
+            )}
             {movie.genres && movie.genres.length > 0 && (
               <>
                 <span>•</span>
                 <span>{movie.genres[0]}</span>
+              </>
+            )}
+            {movie.industry === 'Bollywood' && (
+              <>
+                <span>•</span>
+                <span style={{ color: '#fbbf24', fontWeight: 500 }}>Hindi</span>
               </>
             )}
           </div>

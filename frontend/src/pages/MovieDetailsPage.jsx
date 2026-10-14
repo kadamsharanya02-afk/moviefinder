@@ -279,7 +279,19 @@ const MovieDetailsPage = () => {
             )}
 
             {/* Metadata Pills */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', marginBottom: '18px' }}>
+              {movie.contentType === 'TV_SERIES' && (
+                <div style={{ backgroundColor: 'rgba(79, 70, 229, 0.25)', border: '1px solid rgba(79, 70, 229, 0.5)', color: '#c7d2fe', padding: '3px 10px', borderRadius: '14px', fontSize: '0.8rem', fontWeight: 700 }}>
+                  TV Series {movie.seasons ? `• ${movie.seasons}` : ''}
+                </div>
+              )}
+
+              {movie.industry === 'Bollywood' && (
+                <div style={{ backgroundColor: 'rgba(217, 119, 6, 0.25)', border: '1px solid rgba(217, 119, 6, 0.5)', color: '#fde68a', padding: '3px 10px', borderRadius: '14px', fontSize: '0.8rem', fontWeight: 700 }}>
+                  Bollywood Cinema
+                </div>
+              )}
+
               {movie.releaseYear && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#a3a3b2', fontSize: '0.85rem' }}>
                   <Calendar size={15} />
@@ -290,14 +302,14 @@ const MovieDetailsPage = () => {
               {movie.runtime && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#a3a3b2', fontSize: '0.85rem' }}>
                   <Clock size={15} />
-                  <span>{movie.runtime} min</span>
+                  <span>{movie.runtime} min{movie.contentType === 'TV_SERIES' ? ' / ep' : ''}</span>
                 </div>
               )}
 
               {movie.director && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#a3a3b2', fontSize: '0.85rem' }}>
                   <User size={15} />
-                  <span>Dir: {movie.director}</span>
+                  <span>{movie.contentType === 'TV_SERIES' ? 'Creators' : 'Dir'}: {movie.director}</span>
                 </div>
               )}
             </div>

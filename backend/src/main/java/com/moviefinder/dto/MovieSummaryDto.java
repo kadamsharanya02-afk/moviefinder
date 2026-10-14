@@ -18,6 +18,9 @@ public class MovieSummaryDto {
     private String explanation;
     private boolean inWatchlist;
     private Integer userRating;
+    private String contentType;
+    private String industry;
+    private String seasons;
 
     public MovieSummaryDto() {}
 
@@ -62,4 +65,13 @@ public class MovieSummaryDto {
 
     public Integer getUserRating() { return userRating; }
     public void setUserRating(Integer userRating) { this.userRating = userRating; }
+
+    public String getContentType() { return contentType; }
+    public void setContentType(String contentType) { this.contentType = contentType; }
+
+    public String getIndustry() { return industry; }
+    public void setIndustry(String industry) { this.industry = industry; }
+
+    public String getSeasons() { return seasons; }
+    public void setSeasons(String seasons) { this.seasons = seasons; }
 }

@@ -10,6 +10,8 @@ const HomePage = () => {
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [popularMovies, setPopularMovies] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
+  const [bollywoodMovies, setBollywoodMovies] = useState([]);
+  const [tvSeries, setTvSeries] = useState([]);
   const [becauseYouWatched, setBecauseYouWatched] = useState([]);
   const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,17 +26,21 @@ const HomePage = () => {
       try {
         setLoading(true);
 
-        const [featuredRes, trendingRes, popularRes, topRatedRes] = await Promise.all([
+        const [featuredRes, trendingRes, popularRes, topRatedRes, bollywoodRes, tvSeriesRes] = await Promise.all([
           api.get('/movies/featured'),
           api.get('/movies/trending'),
           api.get('/movies/popular'),
           api.get('/movies/top-rated'),
+          api.get('/movies/bollywood'),
+          api.get('/movies/tv-series'),
         ]);
 
         setFeaturedMovie(featuredRes.data);
         setTrendingMovies(trendingRes.data);
         setPopularMovies(popularRes.data);
         setTopRatedMovies(topRatedRes.data);
+        setBollywoodMovies(bollywoodRes.data);
+        setTvSeries(tvSeriesRes.data);
 
         // Fetch user-personalized rows if authenticated
         if (isAuthenticated) {
@@ -130,6 +136,24 @@ const HomePage = () => {
           movies={trendingMovies}
           onPlayTrailer={handlePlayTrailer}
         />
+
+        {bollywoodMovies.length > 0 && (
+          <MovieRow
+            title="Bollywood Blockbusters"
+            subtitle="Iconic Hindi cinema, timeless dramas & comedy classics"
+            movies={bollywoodMovies}
+            onPlayTrailer={handlePlayTrailer}
+          />
+        )}
+
+        {tvSeries.length > 0 && (
+          <MovieRow
+            title="Top Rated TV Series & Web Shows"
+            subtitle="Critically acclaimed binge-worthy multi-season sagas"
+            movies={tvSeries}
+            onPlayTrailer={handlePlayTrailer}
+          />
+        )}
 
         <MovieRow
           title="Popular on MovieFinder"

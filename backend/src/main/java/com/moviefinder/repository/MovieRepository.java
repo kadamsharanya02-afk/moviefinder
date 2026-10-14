@@ -27,4 +27,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     @Query("SELECT DISTINCT m FROM Movie m JOIN m.genres g WHERE g.id IN :genreIds ORDER BY m.tmdbRating DESC")
     List<Movie> findByGenreIds(@Param("genreIds") List<Long> genreIds);
+
+    List<Movie> findByIndustryIgnoreCaseOrderByTmdbRatingDesc(String industry);
+
+    List<Movie> findByContentTypeIgnoreCaseOrderByTmdbRatingDesc(String contentType);
 }
